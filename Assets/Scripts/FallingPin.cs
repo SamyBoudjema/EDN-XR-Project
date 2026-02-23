@@ -2,7 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// Détecte si une quille est tombée en comparant son inclinaison
-/// par rapport à la verticale (Vector3.up).
+/// par rapport à son orientation initiale.
 /// À attacher sur chaque prefab de quille (Pin).
 /// </summary>
 public class FallingPin : MonoBehaviour
@@ -16,19 +16,30 @@ public class FallingPin : MonoBehaviour
     [Tooltip("Effet de particules de célébration (bonus)")]
     public ParticleSystem celebrationEffect;
 
+    // Direction "haut" initiale de la quille au démarrage
+    private Vector3 initialUp;
+
+    void Start()
+    {
+        // Mémoriser l'orientation initiale de la quille
+        initialUp = transform.up;
+    }
+
     void Update()
     {
-        // Calculer l'angle entre le haut de la quille et le haut du monde
-        float angle = Vector3.Angle(transform.up, Vector3.up);
+        // Calculer l'angle entre l'orientation actuelle et l'orientation initiale
+        float angle = Vector3.Angle(transform.up, initialUp);
 
         // Si l'angle dépasse le seuil et que la quille n'est pas encore marquée comme tombée
         if (angle > fallAngleThreshold && !isFallen)
         {
             isFallen = true;
 
-            // Bonus : déclencher l'effet de particules si configuré
+            // Bonus : déclencher l'effet de particules une seule fois
             if (celebrationEffect != null)
             {
+                var main = celebrationEffect.main;
+                main.loop = false; // Désactiver la boucle
                 celebrationEffect.Play();
             }
         }

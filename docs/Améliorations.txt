@@ -1,0 +1,5 @@
+Améliorations : 
+	- Reset la partie 
+	- Faire un truc mieux pour les boules 
+	- Refaire la salle 
+	- 
