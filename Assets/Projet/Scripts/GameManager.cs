@@ -35,7 +35,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        StartGame(); // Call StartGame() so the Spawner starts immediately
+        // On ne démarre plus la partie automatiquement. Le MenuManager va s'en charger !
+        ResetGame();
     }
 
     private void Update()

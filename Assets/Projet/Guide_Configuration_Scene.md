@@ -47,10 +47,42 @@ Ce guide présente les étapes à suivre dans l'Éditeur Unity pour assembler le
 4. Dans l'inspecteur du Spawner, remplissez la liste *Prefabs To Spawn* avec les Prefabs de Fruits et de Bombes créés à l'étape 5.
 5. Ajustez la force (`Spawn Force Min/Max`) pour que les objets montent à la bonne hauteur devant le joueur.
 
-## 7. Configuration des Événements du GameManager (Optionnel mais recommandé)
-1. Sélectionnez le `GameManager` dans la hiérarchie.
-2. Dans la section *On Game Start ()*, vous pouvez par exemple ajouter des événements pour afficher/masquer certains textes, activer le spawner, etc. (Le Spawner s'inscrit déjà automatiquement grâce au code).
-3. De même pour *On Game Over ()* pour afficher un menu de fin.
+## 7. Configuration du Menu Principal (Étape par Étape)
+Le menu permet au joueur de choisir son mode de jeu au lancement de l'application.
 
----
-**Astuce Lancement :** N'oubliez pas d'ajouter un bouton (UI ou un bouton physique VR) qui appelle la méthode `GameManager.Instance.StartGame()` pour lancer la partie !
+### A. Créer l'objet MenuManager
+1. Dans la hiérarchie à gauche, faites un **clic droit > Create Empty**.
+2. Renommez cet objet vide en **`MenuManager`**.
+3. Glissez-y le script `MenuManager.cs`.
+
+### B. Créer l'écran du Menu Principal (Le Canvas)
+1. Allez dans : `GameObject > UI > Canvas`.
+2. Renommez-le en **`MainMenu_Canvas`**. L'Éditeur va aussi créer un objet nommé `EventSystem`, gardez-le précieusement.
+3. Dans l'inspecteur à droite, trouvez le composant "Canvas". Changez le paramètre *Render Mode* (probablement sur Screen Space) pour le mettre sur **`World Space`**.
+4. La taille de base est gigantesque. Modifiez son *Scale* (Échelle) pour la mettre à **`X: 0.002, Y: 0.002, Z: 0.002`**.
+5. Déplacez ce Canvas devant les yeux du joueur (par exemple `Position Z: 1`, `Position Y: 1.5`).
+
+### C. Ajouter et configurer les Boutons
+1. Faites un clic droit sur votre `MainMenu_Canvas` > `UI > Button - TextMeshPro`.
+2. Renommez-le en `Bouton_Defouloir`. En dépliant ce bouton, vous verrez un objet `Text (TMP)`, cliquez dessus et écrivez "Jouer (Défouloir)" dans la case texte.
+3. Faites un autre clic droit sur `MainMenu_Canvas` et créez un deuxième bouton nommé `Bouton_Recette` avec le texte "Jouer (Recette)". Positionnez-les correctement.
+4. **Relier le bouton au code :**
+   - Cliquez sur `Bouton_Defouloir`.
+   - Dans l'inspecteur à droite, descendez tout en bas jusqu'à voir **`On Click ()`**.
+   - Cliquez sur le petit bouton **`+`**.
+   - Vous verrez une case avec écrit *None (Object)*. Prenez l'objet **`MenuManager`** (créé en A) depuis la hiérarchie et glissez-le dans cette case.
+   - À droite, cliquez sur le menu déroulant *"No Function"* > Sélectionnez **`MenuManager`**, puis choisissez **`StartModeDefouloir ()`**.
+   - Répétez l'opération C.4 pour le `Bouton_Recette`, mais en choisissant la fonction **`StartModeRecette ()`**.
+
+### D. Lier les éléments dans le MenuManager
+1. Cliquez sur votre objet **`MenuManager`** dans la hiérarchie.
+2. Dans le script affiché à droite, vous verrez 3 cases vides.
+3. Glissez votre `MainMenu_Canvas` dans la case **Main Menu Panel**.
+4. Glissez le Canvas que vous aviez créé à l'étape 3 (celui avec le score et le chrono) dans la case **Game UI Panel**. *(Note: Créez plus tard un GameOver_Canvas pour la 3ème case, ou laissez vide pour l'instant).*
+
+### E. Indispensable pour cliquer en VR ! (EventSystem)
+Si vous lancez le jeu tel quel, vos manettes ne pourront pas interagir avec le menu.
+1. Cliquez sur l'objet **`EventSystem`** (qui a été créé tout seul avec votre premier Canvas).
+2. S'il a un composant appelé "Standalone Input Module" ou "Input System UI Input Module", vous pouvez repérer en bas de l'écran un autre bouton "Replace with XR UI Input Module" ou cliquez sur **Add Component** et cherchez **`XR UI Input Module`**.
+3. Cet ajout convertit la souris de l'ordinateur en pointeur VR !
+4. Allez sur le contrôleur de votre manette PICO (`XR Origin > ... > Right Controller`) et assurez-vous qu'elle a bien un composant **`XR Ray Interactor`** et un **`Line Renderer`** pour pouvoir viser le bouton avec un rayon visuel.
