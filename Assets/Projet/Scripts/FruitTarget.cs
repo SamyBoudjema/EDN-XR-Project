@@ -4,8 +4,8 @@ public class FruitTarget : MonoBehaviour
 {
     public string ingredientName = "Pomme";
     public int scoreValue = 10;
-    public GameObject slicedPrefab; // Prefab with both halves
-    public float separationForce = 5f;
+    public GameObject explosionPrefab; // Prefab du système de particules (VFX d'explosion)
+    public AudioClip explosionSound;    // Son d'écrasement de fruit
 
     public void Slice(Vector3 sliceDirection, Vector3 contactPoint, Vector3 sliceVelocity)
     {
@@ -21,21 +21,16 @@ public class FruitTarget : MonoBehaviour
             }
         }
 
-        if (slicedPrefab != null)
+        if (explosionPrefab != null)
         {
-            GameObject slicedObj = Instantiate(slicedPrefab, transform.position, transform.rotation);
-            
-            Rigidbody[] rbs = slicedObj.GetComponentsInChildren<Rigidbody>();
-            
-            // To properly split objects, we determine which side of the local center they are on
-            foreach (Rigidbody rb in rbs)
-            {
-                Vector3 direction = (rb.transform.position - transform.position).normalized;
-                if (direction == Vector3.zero) direction = Random.insideUnitSphere.normalized;
-                
-                rb.AddForce(direction * separationForce, ForceMode.Impulse);
-                rb.AddTorque(Random.insideUnitSphere * separationForce, ForceMode.Impulse);
-            }
+            Instantiate(explosionPrefab, transform.position, transform.rotation);
+        }
+
+        if (explosionSound != null)
+        {
+            // Create a temporary object to play the sound at the explosion location
+            // so it doesn't get cut off when the fruit is destroyed
+            AudioSource.PlayClipAtPoint(explosionSound, transform.position);
         }
 
         Destroy(gameObject);

@@ -58,8 +58,16 @@ public class Spawner : MonoBehaviour
                     float force = Random.Range(spawnForceMin, spawnForceMax);
                     rb.AddForce(Vector3.up * force, ForceMode.Impulse);
                     
-                    rb.AddTorque(Random.insideUnitSphere * spawnTorqueMax, ForceMode.Impulse);
+                    // On désactive la rotation automatique (Torque) pour que les fruits ne tournoient plus
+                    // rb.AddTorque(Random.insideUnitSphere * spawnTorqueMax, ForceMode.Impulse);
+
+                    // Option : Ralentir la chute en augmentant la résistance de l'air (Drag)
+                    // Plus le chiffre est élevé (ex: 3 au lieu de 0), plus le fruit flottera et tombera lentement.
+                    rb.drag = 3f;
                 }
+
+                // Détruire l'objet après 3 secondes s'il n'a pas été coupé pour libérer la mémoire.
+                Destroy(spawned, 3f);
             }
         }
     }
